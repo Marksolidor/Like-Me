@@ -78,6 +78,29 @@ app.get("/posts", async (req, res) => {
   }
 });
 
+// POST path to store a new record in the post table
+app.post("/posts", async (req, res) => {
+  const { titulo, url, descripcion, likes } = req.body;
+
+  // Validate that the title, image and description are not empty.
+  if (!titulo || !url || !descripcion) {
+    return res.status(422).json({
+      error: "El título, la imagen y la descripción son campos requeridos",
+    });
+  }
+
+  try {
+    const result = await client.query(
+      "INSERT INTO posts (titulo, img, descripcion, likes) VALUES ($1, $2, $3, $4) RETURNING *",
+      [titulo, url, descripcion, likes]
+    );
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
+
 // Start the server on port 3000
 app.listen(3000, () => {
   console.log("Servidor iniciado en el puerto 3000");
