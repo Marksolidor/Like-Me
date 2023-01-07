@@ -43,7 +43,7 @@ const getPosts = async () => {
 };
 
 // POST path to store a new record in the post table
-const createPost = async (titulo, url, descripcion, likes) => {
+const createPost = async (titulo, url, descripcion, likes = 0) => {
   // Validate that the title, image and description are not empty.
   if (!titulo || !url || !descripcion) {
     return {
@@ -71,7 +71,27 @@ const createPost = async (titulo, url, descripcion, likes) => {
   }
 };
 
+// PUT path to increase like on the table
+const updatePostLikes = async (id) => {
+  // Validate that the ID is not empty
+  if (!id) {
+    return { error: "El ID es un campo requerido" };
+  }
+
+  try {
+    const result = await client.query(
+      "UPDATE posts SET likes = likes + 1 WHERE id = $1 RETURNING *",
+      [id]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    return { error };
+  }
+};
+
 module.exports = {
   getPosts,
   createPost,
+  updatePostLikes,
 };
