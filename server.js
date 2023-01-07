@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { getPosts, createPost, updatePostLikes } = require("./db");
+const { getPosts, createPost, updatePostLikes, deletePost } = require("./db");
 
 const app = express();
 
@@ -47,6 +47,17 @@ app.post("/posts", async (req, res) => {
 app.put("/posts/like/:id", async (req, res) => {
   const { id } = req.params;
   const result = await updatePostLikes(id);
+  if (result.error) {
+    res.status(404).json({ error: result.error });
+  } else {
+    res.json(result);
+  }
+});
+
+// DELETE path to delete a record from the post table
+app.delete("/posts/:id", async (req, res) => {
+  const { id } = req.params;
+  const result = await deletePost(id);
   if (result.error) {
     res.status(404).json({ error: result.error });
   } else {

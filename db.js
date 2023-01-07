@@ -90,8 +90,29 @@ const updatePostLikes = async (id) => {
   }
 };
 
+// DELETE path to delete a record from the post table
+const deletePost = async (id) => {
+  // Validate that the ID is not empty
+  if (!id) {
+    return { error: "El ID es un campo requerido" };
+  }
+
+  try {
+    // Delete the post with the provided ID from the table
+    const result = await client.query(
+      "DELETE FROM posts WHERE id = $1 RETURNING *",
+      [id]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    return { error };
+  }
+};
+
 module.exports = {
   getPosts,
   createPost,
   updatePostLikes,
+  deletePost,
 };
