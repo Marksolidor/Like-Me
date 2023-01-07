@@ -49,16 +49,9 @@ app.use((error, req, res, next) => {
 
 // GET path to get the records of the post table
 app.get("/posts", async (req, res) => {
-  // Add a parameter to filter by id
-  const id = req.query.id;
   let query = "SELECT * FROM posts";
-  let params = [];
-  if (id) {
-    query += " WHERE id = $1";
-    params.push(id);
-  }
   try {
-    const result = await client.query(query, params);
+    const result = await client.query(query);
     if (result.rows.length === 0) {
       res.status(404).json({ error: "No se encontraron registros" });
     } else {
