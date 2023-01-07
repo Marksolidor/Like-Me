@@ -7,9 +7,6 @@ const app = express();
 // Enable use of static files in the "public" folder
 app.use(express.static("public"));
 
-// Load environment variables
-require("dotenv").config();
-
 // Enable CORS
 app.use(cors());
 

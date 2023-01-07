@@ -51,6 +51,14 @@ const createPost = async (titulo, url, descripcion, likes) => {
     };
   }
 
+  // Check if the URL has been used before
+  const existingPost = await client.query("SELECT * FROM posts WHERE img=$1", [
+    url,
+  ]);
+  if (existingPost.rows.length > 0) {
+    return { error: "Ya existe una publicación con esta URL" };
+  }
+
   try {
     const result = await client.query(
       "INSERT INTO posts (titulo, img, descripcion, likes) VALUES ($1, $2, $3, $4) RETURNING *",
