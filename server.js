@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { getPosts, createPost } = require("./db");
+const { getPosts, createPost, updatePostLikes } = require("./db");
 
 const app = express();
 
@@ -38,6 +38,17 @@ app.post("/posts", async (req, res) => {
   const result = await createPost(titulo, url, descripcion, likes);
   if (result.error) {
     res.status(422).json({ error: result.error });
+  } else {
+    res.json(result);
+  }
+});
+
+// PUT path to increase like on the table
+app.put("/posts/like/:id", async (req, res) => {
+  const { id } = req.params;
+  const result = await updatePostLikes(id);
+  if (result.error) {
+    res.status(404).json({ error: result.error });
   } else {
     res.json(result);
   }
